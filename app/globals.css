@@ -65,5 +65,5 @@ a{color:var(--primary)}
 .bg-bg{background:var(--bg)} .text-fg{color:var(--fg)} .border-bdr{border-color:var(--bdr)}
 
 .site-nav{display:flex; gap:14px; padding:12px 0; border-bottom:1px solid var(--bdr)}
-.site-nav a{padding:8px 12px; border-radius:10px; text-decoration:none; color:var(--fg)}
+.site-nav a{padding:8px 12px; border-radius:10px; text-decoration:none; color:var(--muted)}
 .site-nav a:hover{background:var(--card)}
