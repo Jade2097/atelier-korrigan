@@ -1,58 +1,54 @@
-// app/contact/page.tsx
 "use client";
 import { useState } from "react";
 
 export default function ContactPage() {
-  const [ok, setOk] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
 
-  async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    setLoading(true);
-    const form = e.currentTarget;
-    const data = {
-      name: (form.elements.namedItem("name") as HTMLInputElement).value,
-      email: (form.elements.namedItem("email") as HTMLInputElement).value,
-      message: (form.elements.namedItem("message") as HTMLTextAreaElement).value,
-    };
-    const res = await fetch("/api/contact", { method:"POST", body:JSON.stringify(data) });
-    setOk(res.ok);
-    setLoading(false);
-    if (res.ok) form.reset();
+  async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (status === "loading") return;
+    const form = event.currentTarget;
+    const fields = new FormData(form);
+    setStatus("loading");
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(Object.fromEntries(fields)),
+      });
+      if (!response.ok) throw new Error("Envoi impossible");
+      setStatus("success");
+      form.reset();
+    } catch {
+      setStatus("error");
+    }
   }
 
-  return (
-    <main className="max-w-xl mx-auto px-4">
-      <h1 className="text-2xl font-bold mb-6">Contact</h1>
-
-      <form onSubmit={onSubmit} className="space-y-4">
-        <div>
-          <label htmlFor="name" className="block text-sm font-medium">Nom</label>
-          <input id="name" name="name" required className="mt-1 w-full rounded-md border px-3 py-2 focus:outline-none focus:ring-2 focus:ring-amber-500" />
-        </div>
-
-        <div>
-          <label htmlFor="email" className="block text-sm font-medium">Email</label>
-          <input id="email" type="email" name="email" required className="mt-1 w-full rounded-md border px-3 py-2 focus:ring-2 focus:ring-amber-500" />
-        </div>
-
-        <div>
-          <label htmlFor="message" className="block text-sm font-medium">Message</label>
-          <textarea id="message" name="message" rows={5} required className="mt-1 w-full rounded-md border px-3 py-2 focus:ring-2 focus:ring-amber-500" />
-        </div>
-
-        <button disabled={loading} className="inline-flex items-center rounded-md bg-amber-600 px-4 py-2 text-white hover:bg-amber-700 disabled:opacity-50">
-          {loading ? "Envoi..." : "Envoyer"}
-        </button>
-      </form>
-
-      {ok && (
-        <p className="mt-4 text-sm text-green-700 bg-green-50 border border-green-200 rounded-md p-3">
-          Merci, votre message a été envoyé.
-        </p>
-      )}
-
-      <footer className="mt-10 text-xs text-slate-500">© 2025 Atelier Korrigan</footer>
-    </main>
-  );
+  return <>
+    <section className="wrap page-title">
+      <h1>Parlons de votre projet</h1>
+      <p className="lede">Pour préparer un premier échange, quelques lignes suffisent.</p>
+    </section>
+    <section className="wrap contact-page">
+      <div><h2>Que mettre dans votre message ?</h2><ul>
+        <li>Votre activité et le lien vers votre site si vous en avez un.</li>
+        <li>Ce que vos clients doivent pouvoir trouver ou faire en ligne.</li>
+        <li>Votre échéance, si vous avez déjà une date en tête.</li>
+      </ul></div>
+      <div className="contact-panel">
+        <form onSubmit={onSubmit} className="contact-form" aria-busy={status === "loading"}>
+          <p className="form-note">Votre message sera adressé à l’atelier. Vos coordonnées serviront à vous répondre.</p>
+          <div className="contact-trap" aria-hidden="true"><label htmlFor="website">Site web</label><input id="website" name="website" tabIndex={-1} autoComplete="off" /></div>
+          <div><label htmlFor="name">Nom</label><input id="name" name="name" autoComplete="name" maxLength={100} required /></div>
+          <div><label htmlFor="email">E-mail</label><input id="email" name="email" type="email" autoComplete="email" maxLength={254} required /></div>
+          <div><label htmlFor="message">Votre projet</label><textarea id="message" name="message" rows={6} maxLength={5000} required /></div>
+          <button className="button" disabled={status === "loading"}>{status === "loading" ? "Envoi…" : "Envoyer le message"}</button>
+          <div aria-live="polite">
+            {status === "success" && <p>Merci, votre message a bien été envoyé.</p>}
+            {status === "error" && <p role="alert">L’envoi n’a pas abouti. Veuillez réessayer ou écrire à <a href="mailto:jadedogo08@gmail.com">jadedogo08@gmail.com</a>.</p>}
+          </div>
+        </form>
+      </div>
+    </section>
+  </>;
 }

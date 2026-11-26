@@ -1,19 +1,8 @@
-import Link from 'next/link';
+export const metadata = { title: "Journal | Atelier Korrigan" };
 
-const posts = [
-  { slug: 'bois-local', title: 'Pourquoi choisir du bois local' },
-  { slug: 'entretenir-plan-de-travail', title: 'Entretenir un plan de travail' },
-];
-
-export default function BlogIndex() {
-  return (
-    <section className="space-y-4">
-      <h2 className="text-3xl font-semibold">Blog</h2>
-      <ul className="list-disc pl-5">
-        {posts.map((p) => (
-          <li key={p.slug}><Link href={`/blog/${p.slug}`}>{p.title}</Link></li>
-        ))}
-      </ul>
-    </section>
-  );
+export default function Page() {
+  return (<>
+<section className="wrap page-title"><h1>Le journal</h1><p className="lede">Des notes pour préparer les textes et les images de votre site.</p></section><section className="wrap article-list"><article><h2><a href="/blog/photos-site-artisan/">Quelles photos préparer pour votre site ?</a></h2><p>Une liste courte pour choisir les images de votre vitrine.</p></article><article><h2><a href="/blog/ecrire-une-realisation/">Qu’écrire sur une page de réalisation ?</a></h2><p>Trois éléments à expliquer sous les photos d’un projet.</p></article></section>
+<section className="band"><div className="wrap block"><h2>Les articles de menuiserie</h2><ul className="archive"><li><a href="/blog/bois-local">Pourquoi choisir du bois local</a></li><li><a href="/blog/entretenir-plan-de-travail">Entretenir un plan de travail</a></li></ul><p className="caption">Des conseils pratiques issus de l’atelier.</p></div></section>
+  </>);
 }

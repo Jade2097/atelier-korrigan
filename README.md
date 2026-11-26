@@ -30,3 +30,19 @@ npm install
 
 ## Déploiement
 Le projet suit la configuration Next.js par défaut ; un `npm run build` suffit avant de déployer sur la plateforme de votre choix (Vercel recommandé).
+
+## Envoi du formulaire de contact
+
+Le formulaire envoie les messages à **jadedogo08@gmail.com** via l’API Resend.
+L’adresse du visiteur est utilisée comme `reply_to` pour répondre directement.
+
+1. Créer une clé API sur Resend et y vérifier un domaine d’envoi.
+2. Copier [.env.example](./.env.example) dans `.env.local` pour le développement.
+3. Renseigner `RESEND_API_KEY` et `CONTACT_FROM` avec une adresse de ce domaine.
+4. Sur Vercel, ajouter ces deux variables dans les paramètres du projet puis redéployer.
+5. Envoyer un message depuis le formulaire et vérifier sa réception dans Gmail.
+
+Ne pas exposer la clé avec un préfixe `NEXT_PUBLIC_`, ni la committer.
+Sans configuration, le formulaire affiche une erreur et propose un lien e-mail.
+Un succès signifie que Resend a accepté l’envoi ; la livraison peut être vérifiée
+sur son tableau de bord. Documentation : https://resend.com/docs/api-reference/emails/send-email.
